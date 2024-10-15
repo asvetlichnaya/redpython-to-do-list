@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Don't forget to do it</title>
+</head>
+<body>
+    <h1>Don't forget to do it</h1>
+    {% for list in lists %}
+    <strong>{{ list.name }}</strong>
+     <ul>
+            {% for item in items %}
+                {% if item.list_id == list.id %}
+                    <li>{{ item.title }}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endfor %}
+</body>
+</html>
