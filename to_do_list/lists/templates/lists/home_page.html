@@ -1,20 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Don't forget to do it</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}Don't forget to do it{% endblock %}
+{% block content %}
     <h1>Don't forget to do it</h1>
-    {% for list in lists %}
-    <strong>{{ list.name }}</strong>
-     <ul>
-            {% for item in items %}
-                {% if item.list_id == list.id %}
-                    <li>{{ item.title }}</li>
-                {% endif %}
+    <p>Please add your list:</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit">Add List</button>
+    </form>
+
+    <table>
+        <tr>
+            {% for list in lists %}
+                <th>{{ list.name }}</th>
             {% endfor %}
-        </ul>
-    {% endfor %}
-</body>
-</html>
+        </tr>
+        <tr>
+            {% for list in lists %}
+                <td>
+                    <ul>
+                        {% for item in list.items.all %}
+                            <li><a href="{% url 'edit_item' item.id %}">{{ item.title }}</a></li>
+                        {% endfor %}
+                        <a href="{% url 'add_item' list.id %}">Add an Item</a>
+                    </ul>
+                </td>
+            {% endfor %}
+        </tr>
+    </table>
+{% endblock %}
+
