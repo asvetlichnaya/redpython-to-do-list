@@ -1,11 +1,11 @@
 {% extends "base.html" %}
-{% block title %}Add an Item{% endblock %}
+{% block title %}Add Item{% endblock %}
 {% block content %}
         <a href="{% url 'add_list' %}">Back</a>
         <h1>Add a new item to {{ list.name }} list</h1>
         <form method="post">
             {% csrf_token %}
             {{ form }}
-        <button type="submit" name="add_an_item">Add List</button>
+        <button type="submit" name="add_an_item">Add Item</button>
         </form>
 {% endblock %}

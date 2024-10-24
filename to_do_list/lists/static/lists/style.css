@@ -1,3 +1,22 @@
-li a {
-    color: green;
+a img {
+    width: 18px;
+    height: 20px;
+ }
+
+a {
+  text-decoration: none;
+}
+
+ul li {
+  list-style-type: none;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+table, th, td {
+  vertical-align: top;
+}
+
+table th {
+    text-align: center;
 }

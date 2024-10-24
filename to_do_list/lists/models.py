@@ -1,6 +1,5 @@
 from django.db import models
-
-# Create your models here.
+from datetime import date
 
 
 class List(models.Model):
@@ -26,14 +25,23 @@ class Status(models.Model):
 
 
 class Item(models.Model):
+    PRIORITY = {
+        "1": "High",
+        "2": "Meddium",
+        "3": "Low"
+    }
     list = models.ForeignKey(List, related_name='items', on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     category = models.CharField(max_length=20)
-    priority = models.ForeignKey(Priority, on_delete=models.CASCADE)
-    date = models.DateField()
+    priority = models.CharField(
+        max_length=10,
+        choices=PRIORITY,
+        default=3,
+    )
+    date = models.DateField(default=date.today)
     duration = models.IntegerField(default=1)
-    status = models.ForeignKey(Status, on_delete=models.CASCADE)
-    comments = models.CharField(max_length=200, blank=True)
+    completed = models.BooleanField(default=False)
+    comments = models.TextField(max_length=200, blank=True)
 
     def __str__(self):
         return f"{self.title}"

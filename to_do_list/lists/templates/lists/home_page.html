@@ -10,18 +10,36 @@
         <button type="submit">Add List</button>
     </form>
 
-    <table>
+  <p><a href="{% url 'remove_completed_items' %}">Remove Completed Items</a></p>
+
+  <table>
         <tr>
             {% for list in lists %}
-                <th>{{ list.name }}</th>
+            <th>{{ list.name }} {% load static %} <a href="{% url 'remove_list' list.id %}"><img src="{% static 'lists/Capture.PNG' %}" alt="Remove List" /></a></th>
             {% endfor %}
         </tr>
         <tr>
             {% for list in lists %}
                 <td>
                     <ul>
-                        {% for item in list.items.all %}
-                            <li><a href="{% url 'edit_item' item.id %}">{{ item.title }}</a></li>
+                        {% for item in list.items.all|dictsort:'priority' %}
+                            {% if item.completed == True %}
+                                {% if item.priority == '1' %}
+                                    <li><a style="color: red" href="{% url 'edit_item' item.id %}"><del>{{ item.title }}</del></a></li>
+                                {% elif item.priority == '2' %}
+                                    <li><a style="color: blue" href="{% url 'edit_item' item.id %}"><del>{{ item.title }}</del></a></li>
+                                {% elif item.priority == '3' %}
+                                    <li><a style="color: grey" href="{% url 'edit_item' item.id %}"><del>{{ item.title }}</del></a></li>
+                                {% endif %}
+                          {% elif item.completed == False %}
+                                {% if item.priority == '1' %}
+                                    <li><a style="color: red" href="{% url 'edit_item' item.id %}">{{ item.title }}</a></li>
+                                {% elif item.priority == '2' %}
+                                    <li><a style="color: blue" href="{% url 'edit_item' item.id %}">{{ item.title }}</a></li>
+                                {% elif item.priority == '3' %}
+                                    <li><a style="color: grey" href="{% url 'edit_item' item.id %}">{{ item.title }}</a></li>
+                                {% endif %}
+                            {% endif %}
                         {% endfor %}
                         <a href="{% url 'add_item' list.id %}">Add an Item</a>
                     </ul>
@@ -29,5 +47,6 @@
             {% endfor %}
         </tr>
     </table>
+{{ lists.0.items.priority }}
 {% endblock %}
 
