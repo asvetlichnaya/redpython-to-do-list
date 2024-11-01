@@ -30,9 +30,20 @@ class Item(models.Model):
         "2": "Meddium",
         "3": "Low"
     }
+    CATEGORY = {
+        "WRK": "Work",
+        "FML": "Family",
+        "LRN": "Learning",
+        "TRV": "Travelling",
+        "OTH": "Others"
+    }
     list = models.ForeignKey(List, related_name='items', on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
-    category = models.CharField(max_length=20)
+    category = models.CharField(
+        max_length=20,
+        choices=CATEGORY,
+        default="OTH"
+    )
     priority = models.CharField(
         max_length=10,
         choices=PRIORITY,

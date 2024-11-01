@@ -11,7 +11,14 @@
     </form>
 
   <p><a href="{% url 'remove_completed_items' %}">Remove Completed Items</a></p>
-
+  <p><label for="cars">Category:</label>
+    <select name="cars" id="cars">
+        <option value="volvo">Volvo</option>
+        <option value="saab">Saab</option>
+        <option value="mercedes">Mercedes</option>
+        <option value="audi">Audi</option>
+    </select>
+  </p>
   <table>
         <tr>
             {% for list in lists %}

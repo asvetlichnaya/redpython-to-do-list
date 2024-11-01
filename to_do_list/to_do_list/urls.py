@@ -24,7 +24,7 @@ urlpatterns = [
     path('', add_list, name='add_list'),
     path('remove-list/<int:list_id>', remove_list, name='remove_list'),
     path('add-item/<int:list_id>', add_item, name='add_item'),
-    path('<int:item_id>/edit-item/', edit_item, name='edit_item'),
+    path('edit-item/<int:item_id>', edit_item, name='edit_item'),
     path('remove_completed_items', remove_completed_items, name='remove_completed_items'),
     path('filter_items', filter_items, name='filter_items'),
 ]
