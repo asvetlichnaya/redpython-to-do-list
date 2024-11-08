@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Don't forget to do it{% endblock %}
+{% block content %}
+<a href="{% url 'show_list' %}">Back</a>
+    <h1>Items from {{ category }} category</h1>
+<table>
+        <tr>
+            {% for list in lists %}
+                <th>{{ list.name }}</th>
+            {% endfor %}
+        </tr>
+        <tr>
+            {% for list in lists %}
+                <td>
+                    <ul>
+                        {% for item in items|dictsort:'priority' %}
+                        {% if item.category_verbose == category and item.list == list %}
+                            {% if item.completed == True %}
+                                {% if item.priority == '1' %}
+                                    <li><a style="color: red" href="{% url 'edit_item' item.id %}"><del>{{ item.title }}</del></a></li>
+                                {% elif item.priority == '2' %}
+                                    <li><a style="color: blue" href="{% url 'edit_item' item.id %}"><del>{{ item.title }}</del></a></li>
+                                {% elif item.priority == '3' %}
+                                    <li><a style="color: grey" href="{% url 'edit_item' item.id %}"><del>{{ item.title }}</del></a></li>
+                                {% endif %}
+                          {% elif item.completed == False %}
+                                {% if item.priority == '1' %}
+                                    <li><a style="color: red" href="{% url 'edit_item' item.id %}">{{ item.title }}</a></li>
+                                {% elif item.priority == '2' %}
+                                    <li><a style="color: blue" href="{% url 'edit_item' item.id %}">{{ item.title }}</a></li>
+                                {% elif item.priority == '3' %}
+                                    <li><a style="color: grey" href="{% url 'edit_item' item.id %}">{{ item.title }}</a></li>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                        {% endfor %}
+                    </ul>
+                </td>
+            {% endfor %}
+        </tr>
+    </table>
+{% endblock %}

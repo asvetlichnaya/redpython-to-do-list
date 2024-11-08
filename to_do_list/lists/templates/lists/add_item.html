@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Add Item{% endblock %}
 {% block content %}
-        <a href="{% url 'add_list' %}">Back</a>
+        <a href="{% url 'show_list' %}">Back</a>
         <h1>Add a new item to {{ list.name }} list</h1>
         <form method="post">
             {% csrf_token %}

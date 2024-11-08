@@ -1,69 +1,102 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import List, Item
 from django.forms import modelform_factory
-from datetime import date
-from django.utils import timezone
+from . forms import CreateUserForm, LoginForm
+
+from django.contrib.auth.models import auth
+from django.contrib.auth import authenticate
+
+from django.contrib.auth.decorators import login_required
+
+
+def register(request):
+    form = CreateUserForm()
+
+    if request.method == 'POST':
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('log_in')
+
+    return render(request, "lists/register.html", {'registerform': form})
+
+
+def log_in(request):
+    form = LoginForm()
+
+    if request.method == 'POST':
+        form = LoginForm(request, data=request.POST)
+        if form.is_valid():
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+
+            user = authenticate(request, username=username, password=password)
+
+            if user is not None:
+                auth.login(request, user)
+                return redirect('show_list')
+
+    return render(request, "lists/login.html", {"loginform": form})
+
+
+def user_logout(request):
+    auth.logout(request)
+    return redirect('add_list')
 
 
 def add_list(request):
+    return render(request, "lists/home_page.html")
+
+
+@login_required(login_url='log_in')
+def show_list(request):
     ListForm = modelform_factory(List, fields=('name',))
 
     if request.method == 'POST':
         form = ListForm(request.POST)
         if form.is_valid():
+            new_list = form.save(commit=False)
+            new_list.user = request.user
             form.save()
-            return redirect('add_list')
+            return redirect('show_list')
     else:
         form = ListForm()
 
-    lists = List.objects.all()
-    items = Item.objects.all()
+    lists = List.objects.filter(user=request.user)
+    items = Item.objects.filter(list__in = lists)
+    categories = Item.CATEGORY.values()
 
-    return render(request, "lists/home_page.html", {"form": form, 'lists': lists, 'items': items})
+    return render(request, "lists/dashboard.html",
+                  {"form": form, 'lists': lists, 'items': items, 'categories': categories})
 
 
+@login_required(login_url='log_in')
 def remove_list(request, list_id):
-    ListForm = modelform_factory(List, fields=('name',))
     list = get_object_or_404(List, pk=list_id)
 
     list.delete()
-    form = ListForm()
-    lists = List.objects.all()
-    items = Item.objects.all()
-
-    return render(request, "lists/home_page.html", {"form": form, 'lists': lists, 'items': items})
+    return redirect('show_list')
 
 
 def remove_completed_items(request):
-    ListForm = modelform_factory(List, fields=('name',))
     items = Item.objects.all()
 
     for item in items:
         if item.completed:
             item.delete()
-
-    form = ListForm()
-    lists = List.objects.all()
-    items = Item.objects.all()
-
-    return render(request, "lists/home_page.html", {"form": form, 'lists': lists, 'items': items})
-
-# not yet ready
-def filter_items(request):
-    ListForm = modelform_factory(List, fields=('name',))
-    items = Item.objects.all()
-    lists = List.objects.all()
-
-    filtered_items = []
-    for item in items:
-        if item.date == date.today():
-            filtered_items.append(item)
-
-    form = ListForm()
-
-    return render(request, "lists/home_page.html", {"form": form, 'lists': lists, 'items': filtered_items})
+    return redirect('show_list')
 
 
+@login_required(login_url='log_in')
+def filter_items(request, category):
+
+    lists = List.objects.filter(user=request.user)
+    items = Item.objects.filter(list__in=lists)
+
+    return render(request, "lists/filter_items.html", {'lists': lists, 'items': items, "category": category})
+
+
+@login_required(login_url='log_in')
 def add_item(request, list_id):
     list = get_object_or_404(List, pk=list_id)
     ItemForm = modelform_factory(Item, fields=('list', 'title', 'category', 'priority', 'date', 'duration', 'completed', 'comments',))
@@ -73,13 +106,15 @@ def add_item(request, list_id):
         form = ItemForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('add_list')
+            return redirect('show_list')
     else:
         form = ItemForm(initial={'list': list})
+        form.fields['list'].queryset = List.objects.filter(user=request.user)
 
     return render(request, "lists/add_item.html", {"form": form, "list": list})
 
 
+@login_required(login_url='log_in')
 def edit_item(request, item_id):
     item = Item.objects.get(pk=item_id)
 
@@ -90,11 +125,12 @@ def edit_item(request, item_id):
             form = ItemForm(request.POST, instance=item)
             if form.is_valid():
                 form.save()
-                return redirect('add_list')
+                return redirect('show_list')
         elif 'remove' in request.POST:
             item.delete()
-            return redirect('add_list')
+            return redirect('show_list')
     else:
         form = ItemForm(instance=item)
+        form.fields['list'].queryset = List.objects.filter(user=request.user)
 
     return render(request, "lists/edit_item.html", {"form": form})

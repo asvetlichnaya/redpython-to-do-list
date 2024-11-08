@@ -1,9 +1,11 @@
 from django.db import models
 from datetime import date
+from django.contrib.auth.models import User
 
 
 class List(models.Model):
     name = models.CharField(max_length=200)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
 
     def __str__(self):
         return f"{self.name}"
@@ -57,3 +59,5 @@ class Item(models.Model):
     def __str__(self):
         return f"{self.title}"
 
+    def category_verbose(self):
+        return dict(Item.CATEGORY)[self.category]
