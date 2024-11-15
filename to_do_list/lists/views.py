@@ -1,50 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import List, Item
 from django.forms import modelform_factory
-from . forms import CreateUserForm, LoginForm
-
-from django.contrib.auth.models import auth
-from django.contrib.auth import authenticate
-
 from django.contrib.auth.decorators import login_required
 
 
-def register(request):
-    form = CreateUserForm()
-
-    if request.method == 'POST':
-        form = CreateUserForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('log_in')
-
-    return render(request, "lists/register.html", {'registerform': form})
-
-
-def log_in(request):
-    form = LoginForm()
-
-    if request.method == 'POST':
-        form = LoginForm(request, data=request.POST)
-        if form.is_valid():
-            username = request.POST.get('username')
-            password = request.POST.get('password')
-
-            user = authenticate(request, username=username, password=password)
-
-            if user is not None:
-                auth.login(request, user)
-                return redirect('show_list')
-
-    return render(request, "lists/login.html", {"loginform": form})
-
-
-def user_logout(request):
-    auth.logout(request)
-    return redirect('add_list')
-
-
-def add_list(request):
+def index(request):
     return render(request, "lists/home_page.html")
 
 
@@ -78,6 +38,7 @@ def remove_list(request, list_id):
     return redirect('show_list')
 
 
+@login_required(login_url='log_in')
 def remove_completed_items(request):
     items = Item.objects.all()
 
