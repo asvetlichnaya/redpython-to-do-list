@@ -14,7 +14,7 @@ def register(request):
             form.save()
             return redirect('log_in')
 
-    return render(request, "lists/register.html", {'registerform': form})
+    return render(request, "users/register.html", {'registerform': form})
 
 
 def log_in(request):
@@ -32,7 +32,7 @@ def log_in(request):
                 auth.login(request, user)
                 return redirect('show_list')
 
-    return render(request, "lists/login.html", {"loginform": form})
+    return render(request, "users/login.html", {"loginform": form})
 
 
 def user_logout(request):

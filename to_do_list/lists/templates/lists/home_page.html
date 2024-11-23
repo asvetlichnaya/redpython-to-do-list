@@ -1,9 +1,15 @@
 {% extends "base.html" %}
 
 {% block title %}Don't forget to do it{% endblock %}
-{% block content %}
+{% block header %}
+<main role="main" class="container">
+  <div class="jumbotron">
     <h1>Don't forget to do it</h1>
-    <p><a href="{% url 'log_in' %}">Login</a></p>
-    <p><a href="{% url 'register' %}">Register</a></p>
-{% endblock %}
-
+    <p class="lead"><a href="{% url 'register' %}">Register an account</a> to organize your tasks efficiently with the to-do-list application,
+      it allows you to create and manage multiple lists. Easily split tasks based on categories or needs,
+      and have them sorted by priority so the most important ones are always at the top.</p>
+  </div>
+</main>
+{% endblock header %}
+{% block content %}
+{% endblock content %}

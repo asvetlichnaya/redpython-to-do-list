@@ -11,34 +11,21 @@ class List(models.Model):
         return f"{self.name}"
 
 
-class Priority(models.Model):
-    name = models.CharField(max_length=20)
-    value = models.IntegerField(default=1)
-
-    def __str__(self):
-        return f"{self.name}"
-
-
-class Status(models.Model):
-    name = models.CharField(max_length=20)
-
-    def __str__(self):
-        return f"{self.name}"
-
-
 class Item(models.Model):
-    PRIORITY = {
-        "1": "High",
-        "2": "Meddium",
-        "3": "Low"
-    }
-    CATEGORY = {
-        "WRK": "Work",
-        "FML": "Family",
-        "LRN": "Learning",
-        "TRV": "Travelling",
-        "OTH": "Others"
-    }
+    PRIORITY = [
+        ("1", "High"),
+        ("2", "Medium"),
+        ("3", "Low")
+    ]
+
+    CATEGORY = [
+        ("WRK", "Work"),
+        ("FML", "Family"),
+        ("LRN", "Learning"),
+        ("TRV", "Travelling"),
+        ("OTH", "Others")
+    ]
+
     list = models.ForeignKey(List, related_name='items', on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     category = models.CharField(
@@ -61,3 +48,6 @@ class Item(models.Model):
 
     def category_verbose(self):
         return dict(Item.CATEGORY)[self.category]
+
+    def priority_verbose(self):
+        return dict(Item.PRIORITY)[self.priority]

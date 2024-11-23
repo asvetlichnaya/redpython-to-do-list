@@ -1,30 +1,54 @@
 {% extends "base.html" %}
 
 {% block title %}Don't forget to do it{% endblock %}
+{% block header %}
+    <div class="text-left">
+        <a href="{% url 'show_list' %}" class="d-block ml-3 mb-2 mt-2">Back</a>
+        <h1 class="ml-5 mb-3">Items from {{ category }} category</h1>
+    </div>
+{% endblock header %}
 {% block content %}
-<a href="{% url 'show_list' %}">Back</a>
-    <h1>Items from {{ category }} category</h1>
-<ul>
+
+<div class="container">
+    <div class="row mb-0 list-group-item-primary">
+        <div class="col-2 themed-grid-col">List Name</div>
+        <div class="col-2 themed-grid-col">Item Name</div>
+        <div class="col-2 themed-grid-col">Category</div>
+        <div class="col-1 themed-grid-col">Priority</div>
+        <div class="col-1 themed-grid-col">Date</div>
+        <div class="col-1 themed-grid-col">Duration</div>
+        <div class="col-1 themed-grid-col">Completed</div>
+        <div class="col-2 themed-grid-col">Comments</div>
+    </div>
     {% for item in items|dictsort:'priority' %}
         {% if item.category_verbose == category %}
-            {% if item.completed == True %}
-                {% if item.priority == '1' %}
-                    <li><a style="color: red" href="{% url 'edit_item' item.id %}"><del>{{ item.title }}</del></a></li>
-                {% elif item.priority == '2' %}
-                    <li><a style="color: blue" href="{% url 'edit_item' item.id %}"><del>{{ item.title }}</del></a></li>
-                {% elif item.priority == '3' %}
-                    <li><a style="color: grey" href="{% url 'edit_item' item.id %}"><del>{{ item.title }}</del></a></li>
-                {% endif %}
-            {% elif item.completed == False %}
-                {% if item.priority == '1' %}
-                    <li><a style="color: red" href="{% url 'edit_item' item.id %}">{{ item.title }}</a></li>
-                {% elif item.priority == '2' %}
-                    <li><a style="color: blue" href="{% url 'edit_item' item.id %}">{{ item.title }}</a></li>
-                {% elif item.priority == '3' %}
-                    <li><a style="color: grey" href="{% url 'edit_item' item.id %}">{{ item.title }}</a></li>
-                {% endif %}
-            {% endif %}
+        <div class="row mb-0">
+                <div class="col-2 themed-grid-body">
+                    <a href="{% url 'edit_item' item.id %}">{{ item.list }}</a>
+                </div>
+                <div class="col-2 themed-grid-body">
+                    <a href="{% url 'edit_item' item.id %}">{{ item.title }}</a>
+                </div>
+                <div class="col-2 themed-grid-body">
+                    <a href="{% url 'edit_item' item.id %}">{{ item.category_verbose }}</a>
+                </div>
+                <div class="col-1 themed-grid-body">
+                    <a href="{% url 'edit_item' item.id %}">{{ item.priority_verbose }}</a>
+                </div>
+                <div class="col-1 themed-grid-body">
+                    <a href="{% url 'edit_item' item.id %}">{{ item.date|date:"d M Y" }}</a>
+                </div>
+                <div class="col-1 themed-grid-body">
+                    <a href="{% url 'edit_item' item.id %}">{{ item.duration }}</a>
+                </div>
+                <div class="col-1 themed-grid-body">
+                    <a href="{% url 'edit_item' item.id %}">{{ item.completed }}</a>
+                </div>
+                <div class="col-2 themed-grid-body">
+                    <a href="{% url 'edit_item' item.id %}">{{ item.comments }}</a>
+                </div>
+        </div>
         {% endif %}
     {% endfor %}
-</ul>
+</div>
 {% endblock %}

@@ -1,4 +1,4 @@
-"""Defines URL patterns for lists."""
+"""Defines URL patterns for users."""
 from django.urls import path
 from . import views
 

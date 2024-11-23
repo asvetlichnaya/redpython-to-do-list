@@ -5,8 +5,9 @@ from django import forms
 
 from django.forms.widgets import PasswordInput, TextInput
 
+
 class CreateUserForm(UserCreationForm):
-    class Meta():
+    class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
 

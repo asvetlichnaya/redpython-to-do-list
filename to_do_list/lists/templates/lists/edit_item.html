@@ -1,13 +1,26 @@
 {% extends "base.html" %}
-{% block title %}Edit an Item{% endblock %}
-{% block content %}
-        <a href="{% url 'show_list' %}">Back</a>
-        <h1>Edit an item </h1>
-        <form method="post">
-            {% csrf_token %}
-            {{ form }}
-        <button type="submit" name="save">Save</button>
-        <button type="submit" name="remove">Remove Item</button>
-        </form>
+{% load bootstrap4 %}
 
+{% block title %}Edit an Item{% endblock %}
+{% block header %}
+    <div class="text-left">
+        <a href="{% url 'show_list' %}" class="d-block ml-3 mb-2 mt-2">Back</a>
+        <h1 class="ml-5">Edit an item</h1>
+    </div>
+{% endblock header %}
+{% block content %}
+    <div class="container my-4">
+        <div class="row justify-content-start">
+            <div class="col-md-8 col-lg-6">
+                <form method="POST" class="form">
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    {% buttons %}
+                    <button type="submit" name="save" class="btn btn-primary mb-2">Save</button>
+                    <button type="submit" name="remove" class="btn btn-primary mb-2">Remove Item</button>
+                    {% endbuttons %}
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}

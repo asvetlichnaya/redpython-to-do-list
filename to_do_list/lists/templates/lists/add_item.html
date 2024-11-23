@@ -1,11 +1,25 @@
 {% extends "base.html" %}
+{% load bootstrap4 %}
+
 {% block title %}Add Item{% endblock %}
+{% block header %}
+    <div class="text-left">
+        <a href="{% url 'show_list' %}" class="d-block ml-3 mb-2 mt-2">Back</a>
+        <h1 class="ml-5">Add a new item to {{ list.name }} list</h1>
+    </div>
+{% endblock header %}
 {% block content %}
-        <a href="{% url 'show_list' %}">Back</a>
-        <h1>Add a new item to {{ list.name }} list</h1>
-        <form method="post">
-            {% csrf_token %}
-            {{ form }}
-        <button type="submit" name="add_an_item">Add Item</button>
-        </form>
+    <div class="container my-4">
+        <div class="row justify-content-start">
+            <div class="col-md-8 col-lg-6">
+                <form method="POST" class="form">
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    {% buttons %}
+                    <button name="submit" class="btn btn-primary mb-2">Add Item</button>
+                    {% endbuttons %}
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}

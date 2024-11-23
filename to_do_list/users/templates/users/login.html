@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load bootstrap4 %}
+
+{% block title %}Log In{% endblock %}
+{% block header %}
+<h2>Log in to your account</h2>
+{% endblock %}
+{% block content %}
+    <div class="container my-4">
+        <div class="row justify-content-left">
+            <div class="col-md-8 col-lg-6">
+                <form method="POST" class="form">
+                    {% csrf_token %}
+                    {% bootstrap_form loginform %}
+                    {% buttons %}
+                    <button name="submit" class="btn btn-primary mb-2">log in</button>
+                    {% endbuttons %}
+                </form>
+            </div>
+        </div>
+        <p>Don't have an account yet? <a href="{% url 'register' %}">Register</a></p>
+    </div>
+{% endblock %}

@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import List, Item
 from django.forms import modelform_factory
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from .forms import ListForm, ItemForm
 
 
 def index(request):
@@ -10,7 +12,7 @@ def index(request):
 
 @login_required(login_url='log_in')
 def show_list(request):
-    ListForm = modelform_factory(List, fields=('name',))
+    form = ListForm(request.POST)
 
     if request.method == 'POST':
         form = ListForm(request.POST)
@@ -24,10 +26,10 @@ def show_list(request):
 
     lists = List.objects.filter(user=request.user)
     items = Item.objects.filter(list__in = lists)
-    categories = Item.CATEGORY.values()
+    category_names = [category[1] for category in Item.CATEGORY]
 
     return render(request, "lists/dashboard.html",
-                  {"form": form, 'lists': lists, 'items': items, 'categories': categories})
+                  {"form": form, 'lists': lists, 'items': items, 'categories': category_names})
 
 
 @login_required(login_url='log_in')
@@ -53,14 +55,16 @@ def filter_items(request, category):
 
     lists = List.objects.filter(user=request.user)
     items = Item.objects.filter(list__in=lists)
+    fields = [field.name for field in Item._meta.get_fields() if field.name != 'id']
 
-    return render(request, "lists/filter_items.html", {'lists': lists, 'items': items, "category": category})
+    return render(request, "lists/filter_items.html", {'lists': lists, 'items': items, "category": category, "fields": fields})
 
 
 @login_required(login_url='log_in')
 def add_item(request, list_id):
+
     list = get_object_or_404(List, pk=list_id)
-    ItemForm = modelform_factory(Item, fields=('list', 'title', 'category', 'priority', 'date', 'duration', 'completed', 'comments',))
+    form = ItemForm(request.POST)
 
     if request.method == 'POST':
         # form has been submitted, process data
